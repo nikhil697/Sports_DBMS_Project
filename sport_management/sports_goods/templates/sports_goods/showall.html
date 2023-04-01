@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Data</title>
+
+    <style>
+        .styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+    </style>
+</head>
+<body>
+    <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Enrollment_number</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Phone_number</th>
+            <th>Fine</th>
+            <th>Item1</th>
+            <th>Item2</th>
+            <th>Item3</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td>{{ student.Enrollment_number }}</td>
+            <td>{{ student.Name }}</td>
+            <td>{{ student.Branch }}</td>
+            <td>{{ student.Phone_number }}</td>
+            <td>{{ student.Fine }}</td>
+            <td>{{ student.Item1 }}</td>
+            <td>{{ student.Item2 }}</td>
+            <td>{{ student.Item3 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</body>
+</html>

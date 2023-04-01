@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Ptudents
+from .models import Students
 from .models import goods
 import logging
 from django.db.utils import IntegrityError
@@ -47,7 +47,7 @@ def insertusers(request):
         tbranch = request.POST.get('branches')
         tphone = request.POST.get('phone')
         try:
-            Regis = Ptudents(Enrollment_number=tnumber, Name=tname, Branch=tbranch, Phone_number=tphone)
+            Regis = Students(Enrollment_number=tnumber, Name=tname, Branch=tbranch, Phone_number=tphone)
             Regis.full_clean()
             Regis.save()
             return render(request, 'sports_goods/index.html', {})
@@ -59,3 +59,8 @@ def insertusers(request):
             return render(request, 'sports_goods/index.html', {'error_msg': error_msg})
     else:
         return render(request, 'sports_goods/index.html', {})
+    
+def show_students(request):
+    students = Students.objects.all()
+    context = {'students': students}
+    return render(request, 'sports_goods/showall.html', context)

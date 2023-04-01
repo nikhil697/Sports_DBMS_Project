@@ -11,7 +11,7 @@ class goods(models.Model):
       class Meta1:
             db_table= 'Items'
 
-class Ptudents(models.Model):
+class Students(models.Model):
     Enrollment_number=models.BigIntegerField(primary_key=True)
     Name=models.CharField(max_length=30)
     Branch=models.CharField(max_length=30, default=None)
