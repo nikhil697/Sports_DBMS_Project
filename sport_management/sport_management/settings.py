@@ -77,7 +77,7 @@ WSGI_APPLICATION = "sport_management.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": 'sports',
+        "NAME": 'newsport',
         'USER': 'root',
         'PASSWORD': 'nikhil2002',
         'HOST': 'localhost',
