@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinLengthValidator
 
 # Create your models here.
 
@@ -16,6 +17,7 @@ class Students(models.Model):
     Name=models.CharField(max_length=30)
     Branch=models.CharField(max_length=30, default=None)
     Phone_number=models.BigIntegerField(unique=True)
+    Password=models.CharField(max_length=20, validators=[MinLengthValidator(5)], default=12345)
     Fine=models.DecimalField(max_digits=5, decimal_places=2, default=0.00, null=True)
     Item1 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item1_students', db_column='Item1', blank=True, null=True)
     Item2 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item2_students', db_column='Item2', blank=True, null=True)

@@ -1,9 +1,12 @@
+import mysql.connector
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Students
 from .models import goods
 import logging
 from django.db.utils import IntegrityError
+
+
 
 # Create your views here.
 # def index(request):
@@ -64,3 +67,14 @@ def show_students(request):
     students = Students.objects.all()
     context = {'students': students}
     return render(request, 'sports_goods/showall.html', context)
+
+
+def particular(request):
+    conne = mysql.connector.connect(user='root', password='nikhil2002',
+                                  host='localhost', database='newsport')
+    cursor = conne.cursor()
+    query = "SELECT * FROM user"
+    cursor.execute(query)
+    results = cursor.fetchall()
+    conne.close()
+    return render(request, 'sports_goods/particular.html', {'results': results})
