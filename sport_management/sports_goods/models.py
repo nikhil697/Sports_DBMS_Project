@@ -7,10 +7,9 @@ class goods(models.Model):
       id=models.AutoField(primary_key=True)
       Equipment_name=models.CharField(max_length=30)
       Sport=models.CharField(max_length=30)
-      Availability=models.BooleanField
       Possessed_by=models.CharField(max_length=30)
-      class Meta1:
-            db_table= 'Items'
+      class Meta:
+            db_table = 'Items'
 
 class Students(models.Model):
     Enrollment_number=models.BigIntegerField(primary_key=True)

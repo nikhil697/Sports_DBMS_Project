@@ -117,5 +117,37 @@ def login_view(request):
     else:
         # if request method is GET, show the login page
         return render(request, 'sports_goods/login_page.html')
+    
+def resetpass(request):
+    return render(request, 'sports_goods/resetpass.html', {})
+
+def success(request):
+    return render(request, 'sports_goods/resetsuccess.html', {'message': 'Password reset success'})
+
+def resetpassfunc(request):
+    if request.method == 'POST':
+        enroll = request.POST.get('EnrollmentNumber1')
+        prevpass = request.POST.get('prevpass')
+        newpass = request.POST.get('newpass')
+        conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+        cursor = conne.cursor()
+        query = f"UPDATE user SET password = '{newpass}' WHERE Enrollment_number = '{enroll}' AND password = '{prevpass}'"
+        cursor.execute(query)
+        if cursor.rowcount > 0:
+            # Password was successfully updated in the database
+            conne.commit()
+            conne.close()
+            return redirect('success')
+        # render(request, 'sports_goods/resetsuccess.html', {})
+        else:
+            # Password could not be updated in the database
+            conne.rollback()
+            conne.close()
+            error_message = 'Invalid login credentials. Please try again.'
+            return render(request, 'sports_goods/resetpass.html', {'error_message': error_message})
+    else:
+        # if request method is GET, show the reset password page
+        return render(request, 'sports_goods/resetpass.html', {})
+        
 
 
