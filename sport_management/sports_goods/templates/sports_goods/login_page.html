@@ -80,17 +80,19 @@
 
 </head>
 <body>
-    <form action="action_page.php" method="post">
-        <div class="imgcontainer">
+  <form action="{% url 'login_view' %}" method="POST">
+
+    {% csrf_token %}
+    <div class="imgcontainer">
           <center><h1>Login Page</h1></center>
         </div>
       
         <div class="container">
-          <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
-      
+          <label for="uname"><b>Enrollment Number</b></label>
+          <input type="number" placeholder="Enter Enrollment Number" name="uname" required>
+          <br><br>
           <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
+          <input type="password" placeholder="Minimum size is 5 characters and maximum is 20 characters" name="psw" required>
       
           <button type="submit">Login</button>
           <label>
