@@ -76,7 +76,6 @@
             <th>Fine</th>
             <th>Item1</th>
             <th>Item2</th>
-            <th>Item3</th>
             <th>Password</th>
           </tr>
         </thead>
@@ -91,10 +90,39 @@
             <td>{{ row.5 }}</td>
             <td>{{ row.6 }}</td>
             <td>{{ row.7 }}</td>
-            <td>{{ row.8 }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table></center></div>
+      <br><br>
+
+      <div style="text-align: center;">
+        
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div>  
+                <label for="item1">   
+                    Item 1:  
+                </label>   
+                <select name="item1" id="item1">  
+                    {% for good in items %}
+                        <option value="{{ good.id }}">{{ good.Equipment_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>  
+                <label for="item2">   
+                    Item 2:  
+                </label>   
+                <select name="item2" id="item2">  
+                    {% for good in items %}
+                        <option value="{{ good.id }}">{{ good.Equipment_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" name="book">Book</button> 
+        </form>
+        </div>
+        
 </body>
 </html>

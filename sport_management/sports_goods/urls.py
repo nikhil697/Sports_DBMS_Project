@@ -13,6 +13,7 @@ urlpatterns = [
     path('resetpage/',views.resetpass, name='reset_page'),
     path('resetpass1/',views.resetpassfunc, name='reset_pass'),
     path('success/',views.success,name='success'),
+    # path('book/', views.book_equipment, name='book_equipment'),
 
 ]
 

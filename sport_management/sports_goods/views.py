@@ -102,11 +102,11 @@ def login_view(request):
             query = F"SELECT * FROM user WHERE enrollment_number = {enrollment_number}"
             cursor.execute(query)
             results = cursor.fetchall()
-            
+            items = goods.objects.filter(Possessed_by__isnull=True)
             # close the database connection
             conne.close()
             
-            return render(request, 'sports_goods/particular.html', {'results': results})
+            return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
         else:
             # close the database connection
             conne.close()
@@ -117,6 +117,8 @@ def login_view(request):
     else:
         # if request method is GET, show the login page
         return render(request, 'sports_goods/login_page.html')
+    
+    
     
 def resetpass(request):
     return render(request, 'sports_goods/resetpass.html', {})
@@ -148,6 +150,13 @@ def resetpassfunc(request):
     else:
         # if request method is GET, show the reset password page
         return render(request, 'sports_goods/resetpass.html', {})
-        
+
+
+# def book_equipment(request):
+#     items = goods.objects.filter(possessed_by=None)
+#     context = {'items': items}
+#     return render(request, 'sports_goods/particular.html', context)
+
+    
 
 
