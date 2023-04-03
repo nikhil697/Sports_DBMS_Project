@@ -157,6 +157,25 @@ def resetpassfunc(request):
 #     context = {'items': items}
 #     return render(request, 'sports_goods/particular.html', context)
 
+def booked(request):
+    if request.method == 'POST':
+        item1 = request.POST.get('item1')
+        item2 = request.POST.get('item2')
+        enrollment_number = request.session.get('Enrollment_number')
+        conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+        cursor = conne.cursor()
+        query=f"update Items set Possessed_by='{enrollment_number}' where id='{item1}'"
+        query1=f"update Items set Possessed_by='{enrollment_number}' where id='{item2}'"
+        query2=f"update user set Item1='{item1}', Item2='{item2}' where Enrollment_number='{enrollment_number}'"
+        cursor.execute(query)
+        cursor.execute(query1)
+        cursor.execute(query2)
+        conne.commit()
+        conne.close()
+        return render(request,'sports_goods/booksuccess.html')
+
+
+
     
 
 

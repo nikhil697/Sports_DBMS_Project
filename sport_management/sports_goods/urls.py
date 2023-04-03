@@ -14,6 +14,8 @@ urlpatterns = [
     path('resetpass1/',views.resetpassfunc, name='reset_pass'),
     path('success/',views.success,name='success'),
     # path('book/', views.book_equipment, name='book_equipment'),
+    path('booksuccess/',views.booked,name='booked'),
+
 
 ]
 

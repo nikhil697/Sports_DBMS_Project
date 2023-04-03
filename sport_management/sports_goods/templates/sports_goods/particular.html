@@ -98,7 +98,7 @@
 
       <div style="text-align: center;">
         
-        <form action="" method="POST">
+        <form action="{% url 'booked' %}" method="POST">
             {% csrf_token %}
             <div>  
                 <label for="item1">   
