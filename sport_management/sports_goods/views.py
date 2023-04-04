@@ -172,7 +172,23 @@ def booked(request):
         cursor.execute(query2)
         conne.commit()
         conne.close()
-        return render(request,'sports_goods/booksuccess.html')
+        message='Successfully Booked'
+        return render(request,'sports_goods/booksuccess.html',{'message':message})
+    
+def released(request):
+    if request.method== 'POST':
+        enrollment_number = request.session.get('Enrollment_number')
+        conne=mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+        cursor = conne.cursor()
+        query1=f"update user set Item1=NULL ,Item2=NULL where Enrollment_number='{enrollment_number}'"
+        query2=f"update Items set Possessed_by=NULL where Possessed_by='{enrollment_number}'"
+        cursor.execute(query1)
+        cursor.execute(query2)
+        conne.commit()
+        conne.close()
+        message='Successfully Returned'
+        return render(request,'sports_goods/booksuccess.html',{'message': message})
+
 
 
 

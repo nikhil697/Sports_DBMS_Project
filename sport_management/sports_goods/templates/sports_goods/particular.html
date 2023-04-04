@@ -123,6 +123,14 @@
             <button type="submit" name="book">Book</button> 
         </form>
         </div>
+        <br><br>
+
+<div>
+    <form action="{% url 'released' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="book" style="height: 40px;width: 60px;border-radius: 3px;border-color: red;border-width: 2px;">Release</button>
+    </form>
+</div>
         
 </body>
 </html>
