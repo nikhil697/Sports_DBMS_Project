@@ -1,5 +1,8 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from datetime import datetime, timedelta
+from django.utils import timezone
+
 
 # Create your models here.
 
@@ -21,6 +24,14 @@ class Students(models.Model):
     Item1 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item1_students', db_column='Item1', blank=True, null=True)
     Item2 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item2_students', db_column='Item2', blank=True, null=True)
     book_time = models.DateTimeField(null=True)
+    def calculate_fine(self):
+        if self.book_time:
+            time_diff = timezone.now() - self.book_time
+            hours_diff = round(time_diff.total_seconds() / 3600)
+            if hours_diff > 2:
+                self.Fine = 100 * hours_diff
+                self.save()
+
     class Meta:
         db_table = 'User'
 

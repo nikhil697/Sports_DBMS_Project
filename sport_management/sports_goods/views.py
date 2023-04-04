@@ -66,6 +66,9 @@ def login_view(request):
                 haveitems = cursor.fetchall()
             # close the database connection
                 conne.close()
+                student = Students.objects.get(Enrollment_number=enrollment_number)
+                # student.book_time = timezone.now()
+                student.calculate_fine()
                 return render(request, 'sports_goods/admin.html', {'results':results,'haveitems': haveitems})
             else:
             # close the database connection
@@ -88,6 +91,9 @@ def login_view(request):
                 items = goods.objects.filter(Possessed_by__isnull=True)
                 # close the database connection
                 conne.close()
+                student = Students.objects.get(Enrollment_number=enrollment_number)
+                # student.book_time = timezone.now()
+                student.calculate_fine()
             
                 return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
             else:
@@ -165,8 +171,12 @@ def released(request):
         cursor = conne.cursor()
         query1=f"update user set Item1=NULL ,Item2=NULL where Enrollment_number='{enrollment_number}'"
         query2=f"update Items set Possessed_by=NULL where Possessed_by='{enrollment_number}'"
+        query3=f"update user set book_time=NULL where Enrollment_number='{enrollment_number}'"
+        query4=f"update user set Fine=0.00 where Enrollment_number='{enrollment_number}'"
         cursor.execute(query1)
         cursor.execute(query2)
+        cursor.execute(query3)
+        cursor.execute(query4)
         conne.commit()
         conne.close()
         message='Successfully Returned'
