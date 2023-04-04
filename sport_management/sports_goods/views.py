@@ -5,39 +5,11 @@ from .models import Students
 from .models import goods
 import logging
 from django.db.utils import IntegrityError
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.utils import timezone
 
 
-
-# Create your views here.
-# def index(request):
-#     return render(request,'sports_goods/index.html')
-
-# def my_view(request):
-#     data = Ptudents.objects.all()
-#     return render(request, 'index.html', {'data': data})
-
-# def register(request):
-#     return render(request,"sports_goods/register.html", {})
-
-
-# def insertuser(request):
-#     # left side pe temporary variables bnane hai and right brackets mein exact names used in template
-#     tnumber= request.POST['EnrollmentNumber'];
-#     tname= request.POST['UName'];
-#     tbranch= request.POST['branches'];
-#     tphone=request.POST['phone'];
-#     # Ab yaha pe left pe database wale names and right pe temporary variables.
-#     Regis=Students(Enrollment_number=tnumber, Name=tname, Branch=tbranch, Phone_number=tphone);
-#     Regis.save();
-#     # Ab yeh wo page hoga jaha pe entry hone ke baad we will go
-#     return render(request,'sports_goods/index.html',{})
-
-# def index(request):
-#     if request.method == 'POST':
-#         print("Form submitted")
-#         return HttpResponse("Form submitted")
-#     else:
-#         return render(request, 'sports_goods/index.html', {})
 
 def register(request):
     return render(request, 'sports_goods/register.html', {})
@@ -69,15 +41,6 @@ def show_students(request):
     return render(request, 'sports_goods/showall.html', context)
 
 
-# def particular(request):
-#     conne = mysql.connector.connect(user='root', password='nikhil2002',
-#                                   host='localhost', database='newsport')
-#     cursor = conne.cursor()
-#     query = "SELECT * FROM user"
-#     cursor.execute(query)
-#     results = cursor.fetchall()
-#     conne.close()
-#     return render(request, 'sports_goods/particular.html', {'results': results})
 
 def loginpage(request):
     return render(request, 'sports_goods/login_page.html')
@@ -87,33 +50,53 @@ def login_view(request):
         enrollment_number = request.POST.get('uname')
         password = request.POST.get('psw')
 
-        # connect to the MySQL database
-        conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
-        cursor = conne.cursor()
-
-        # execute the SQL query to check the credentials
-        query = f"SELECT * FROM user WHERE enrollment_number = {enrollment_number} AND password = '{password}'"
-        cursor.execute(query)
-        user = cursor.fetchone()
-
-        # if user exists, set a session variable and show the dashboard
-        if user:
-            request.session['Enrollment_number'] = user[0] # assuming user_id is the first column in the table
-            query = F"SELECT * FROM user WHERE enrollment_number = {enrollment_number}"
+        if enrollment_number == '000000000':
+            conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+            cursor = conne.cursor()
+            query = f"SELECT * FROM user WHERE enrollment_number = {enrollment_number} AND password = '{password}'"
             cursor.execute(query)
-            results = cursor.fetchall()
-            items = goods.objects.filter(Possessed_by__isnull=True)
+            user = cursor.fetchone()
+            if user:
+                request.session['Enrollment_number'] = user[0] # assuming user_id is the first column in the table
+                query1 = F"SELECT * FROM user WHERE enrollment_number = {enrollment_number}"
+                query2 = f"SELECT * FROM user WHERE Item1 IS NOT NULL OR Item2 IS NOT NULL"
+                cursor.execute(query1)
+                results = cursor.fetchall()
+                cursor.execute(query2)
+                haveitems = cursor.fetchall()
             # close the database connection
-            conne.close()
-            
-            return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
-        else:
+                conne.close()
+                return render(request, 'sports_goods/admin.html', {'results':results,'haveitems': haveitems})
+            else:
             # close the database connection
-            conne.close()
+                conne.close()
 
             # if user does not exist, show an error message
-            error_message = 'Invalid login credentials. Please try again.'
-            return render(request, 'sports_goods/login_page.html', {'error_message': error_message})
+                error_message = 'Invalid login credentials. Please try again.'
+                return render(request, 'sports_goods/login_page.html', {'error_message': error_message})
+        else:
+            conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+            cursor = conne.cursor()
+            query = f"SELECT * FROM user WHERE enrollment_number = {enrollment_number} AND password = '{password}'"
+            cursor.execute(query)
+            user = cursor.fetchone()
+            if user:
+                request.session['Enrollment_number'] = user[0] # assuming user_id is the first column in the table
+                query = F"SELECT * FROM user WHERE enrollment_number = {enrollment_number}"
+                cursor.execute(query)
+                results = cursor.fetchall()
+                items = goods.objects.filter(Possessed_by__isnull=True)
+                # close the database connection
+                conne.close()
+            
+                return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
+            else:
+            # close the database connection
+                conne.close()
+
+            # if user does not exist, show an error message
+                error_message = 'Invalid login credentials. Please try again.'
+                return render(request, 'sports_goods/login_page.html', {'error_message': error_message})
     else:
         # if request method is GET, show the login page
         return render(request, 'sports_goods/login_page.html')
@@ -152,11 +135,6 @@ def resetpassfunc(request):
         return render(request, 'sports_goods/resetpass.html', {})
 
 
-# def book_equipment(request):
-#     items = goods.objects.filter(possessed_by=None)
-#     context = {'items': items}
-#     return render(request, 'sports_goods/particular.html', context)
-
 def booked(request):
     if request.method == 'POST':
         item1 = request.POST.get('item1')
@@ -170,6 +148,11 @@ def booked(request):
         cursor.execute(query)
         cursor.execute(query1)
         cursor.execute(query2)
+        # student = Students.objects.get(Enrollment_number=enrollment_number)
+        # student.book_time = timezone.now()
+        # student.save()
+        query4 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
+        cursor.execute(query4)
         conne.commit()
         conne.close()
         message='Successfully Booked'
@@ -177,7 +160,7 @@ def booked(request):
     
 def released(request):
     if request.method== 'POST':
-        enrollment_number = request.session.get('Enrollment_number')
+        enrollment_number = request.POST.get('enrollment_number')
         conne=mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
         cursor = conne.cursor()
         query1=f"update user set Item1=NULL ,Item2=NULL where Enrollment_number='{enrollment_number}'"
@@ -187,7 +170,7 @@ def released(request):
         conne.commit()
         conne.close()
         message='Successfully Returned'
-        return render(request,'sports_goods/booksuccess.html',{'message': message})
+        return render(request,'sports_goods/admin.html',{'message':message})
 
 
 
