@@ -49,6 +49,8 @@ def login_view(request):
     if request.method == 'POST':
         enrollment_number = request.POST.get('uname')
         password = request.POST.get('psw')
+        student = Students.objects.get(Enrollment_number=enrollment_number)
+        student.calculate_fine()
 
         if enrollment_number == '000000000':
             conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
@@ -66,9 +68,6 @@ def login_view(request):
                 haveitems = cursor.fetchall()
             # close the database connection
                 conne.close()
-                student = Students.objects.get(Enrollment_number=enrollment_number)
-                # student.book_time = timezone.now()
-                student.calculate_fine()
                 return render(request, 'sports_goods/admin.html', {'results':results,'haveitems': haveitems})
             else:
             # close the database connection
@@ -91,9 +90,9 @@ def login_view(request):
                 items = goods.objects.filter(Possessed_by__isnull=True)
                 # close the database connection
                 conne.close()
-                student = Students.objects.get(Enrollment_number=enrollment_number)
+                # student = Students.objects.get(Enrollment_number=enrollment_number)
                 # student.book_time = timezone.now()
-                student.calculate_fine()
+                # student.calculate_fine()
             
                 return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
             else:
@@ -141,28 +140,63 @@ def resetpassfunc(request):
         return render(request, 'sports_goods/resetpass.html', {})
 
 
+# def booked(request):
+#     if request.method == 'POST':
+#         item1 = request.POST.get('item1')
+#         item2 = request.POST.get('item2')
+#         enrollment_number = request.session.get('Enrollment_number')
+#         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
+#         cursor = conne.cursor()
+#         query=f"update Items set Possessed_by='{enrollment_number}' where id='{item1}'"
+#         query1=f"update Items set Possessed_by='{enrollment_number}' where id='{item2}'"
+#         query2=f"update user set Item1='{item1}', Item2='{item2}' where Enrollment_number='{enrollment_number}'"
+#         cursor.execute(query)
+#         cursor.execute(query1)
+#         cursor.execute(query2)
+#         # student = Students.objects.get(Enrollment_number=enrollment_number)
+#         # student.book_time = timezone.now()
+#         # student.save()
+#         query4 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
+#         cursor.execute(query4)
+#         conne.commit()
+#         conne.close()
+#         message='Successfully Booked'
+#         return render(request,'sports_goods/booksuccess.html',{'message':message})
+
 def booked(request):
     if request.method == 'POST':
         item1 = request.POST.get('item1')
         item2 = request.POST.get('item2')
+        if item1 == item2:
+            message = 'Cannot book the same item twice'
+            return render(request, 'sports_goods/booksuccess.html', {'message': message})
         enrollment_number = request.session.get('Enrollment_number')
         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
         cursor = conne.cursor()
-        query=f"update Items set Possessed_by='{enrollment_number}' where id='{item1}'"
-        query1=f"update Items set Possessed_by='{enrollment_number}' where id='{item2}'"
-        query2=f"update user set Item1='{item1}', Item2='{item2}' where Enrollment_number='{enrollment_number}'"
-        cursor.execute(query)
-        cursor.execute(query1)
-        cursor.execute(query2)
-        # student = Students.objects.get(Enrollment_number=enrollment_number)
-        # student.book_time = timezone.now()
-        # student.save()
-        query4 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
-        cursor.execute(query4)
-        conne.commit()
-        conne.close()
-        message='Successfully Booked'
-        return render(request,'sports_goods/booksuccess.html',{'message':message})
+
+        # check if all conditions are met before executing queries
+        query_check = f"SELECT User.Item1, User.Item2, User.Fine, User.book_time FROM User \
+                LEFT JOIN Items ON (Items.Possessed_by=User.Enrollment_number AND \
+                (Items.id=User.Item1 OR Items.id=User.Item2)) \
+                WHERE User.Enrollment_number='{enrollment_number} AND Items.Possessed_by IS NULL'"
+        cursor.execute(query_check)
+        result = cursor.fetchone()
+
+        if not result[0] and not result[1] and result[2] == 0.00 and not result[3]:
+            query = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item1}'"
+            query1 = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item2}'"
+            query2 = f"UPDATE User SET Item1='{item1}', Item2='{item2}' WHERE Enrollment_number='{enrollment_number}'"
+            query3 = f"UPDATE User SET book_time=NOW() WHERE Enrollment_number='{enrollment_number}'"
+            cursor.execute(query)
+            cursor.execute(query1)
+            cursor.execute(query2)
+            cursor.execute(query3)
+            conne.commit()
+            conne.close()
+            message = 'Successfully Booked'
+        else:
+            message = 'Cannot book more than 2 items or you have already booked an item or have a fine pending'
+        return render(request, 'sports_goods/booksuccess.html', {'message': message})
     
 def released(request):
     if request.method== 'POST':
