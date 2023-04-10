@@ -106,7 +106,8 @@
                 <label for="item1">   
                     Item 1:  
                 </label>   
-                <select name="item1" id="item1">  
+                <select name="item1" id="item1"> 
+                    <option value="" selected>None</option>
                     {% for good in items %}
                         <option value="{{ good.id }}">{{ good.Equipment_name }}</option>
                     {% endfor %}
@@ -117,6 +118,7 @@
                     Item 2:  
                 </label>   
                 <select name="item2" id="item2">  
+                    <option value="" selected>None</option>
                     {% for good in items %}
                         <option value="{{ good.id }}">{{ good.Equipment_name }}</option>
                     {% endfor %}

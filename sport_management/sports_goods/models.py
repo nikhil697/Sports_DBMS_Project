@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 
 
+
 # Create your models here.
 
 class goods(models.Model):
@@ -23,15 +24,20 @@ class Students(models.Model):
     Fine=models.DecimalField(max_digits=5, decimal_places=2, default=0.00, null=True)
     Item1 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item1_students', db_column='Item1', blank=True, null=True)
     Item2 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item2_students', db_column='Item2', blank=True, null=True)
-    book_time = models.DateTimeField(null=True)
-    def calculate_fine(self):
-        if self.book_time:
-            time_diff = timezone.now() - self.book_time
-            hours_diff = round(time_diff.total_seconds() / 3600)
-            if hours_diff > 2:
-                self.Fine = 100 * hours_diff
-                self.save()
+    book_time = models.DateTimeField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.book_time:
+            current_time = timezone.now()
+            time_diff = current_time - self.book_time
+            if time_diff.days < 0:
+                self.Fine = 0.00
+            elif time_diff.days == 0 and time_diff.seconds // 3600 <= 2:
+                self.Fine = 0.00
+            else:
+                hours_diff = (time_diff.days * 24) + (time_diff.seconds // 3600)
+                self.Fine = (hours_diff // 2) * 100
+        super().save(*args, **kwargs)
     class Meta:
         db_table = 'User'
 
@@ -40,8 +46,24 @@ class Students(models.Model):
 
 
 
+
+
+
+# def calculate_fine(self):
+    #     if self.book_time:
+    #         time_diff = timezone.now() - self.book_time
+    # #         hours_diff = round(time_diff.total_seconds() / 3600)
+    # #         if hours_diff > 2:
+    # #             self.Fine = 100 * hours_diff
+    # #             self.save()
+
+
+
 # class Person(models.Model):
 #     person_id=models.AutoField(primary_key=True)
 #     first_name=models.CharField(max_length=100, null=False)
 #     last_name=models.CharField(max_length=50)
 #     roll_no=models.
+
+
+

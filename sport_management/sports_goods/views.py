@@ -8,6 +8,7 @@ from django.db.utils import IntegrityError
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.utils import timezone
+from decimal import Decimal
 
 
 
@@ -25,15 +26,16 @@ def insertusers(request):
             Regis = Students(Enrollment_number=tnumber, Name=tname, Branch=tbranch, Phone_number=tphone)
             Regis.full_clean()
             Regis.save()
-            return render(request, 'sports_goods/index.html', {})
+            message="Thanks for registeration"
+            return render(request, 'sports_goods/index.html', {'message': message})
         except IntegrityError:
             error_msg = "Enrollment number already exists"
-            return render(request, 'sports_goods/index.html', {'error_msg': error_msg})
         except Exception as e:
             error_msg = "An error occurred: {}".format(str(e))
-            return render(request, 'sports_goods/index.html', {'error_msg': error_msg})
+        
+        return render(request, 'sports_goods/index.html', {'message': error_msg})
     else:
-        return render(request, 'sports_goods/index.html', {})
+        return render(request, 'sports_goods/register.html', {})
     
 def show_students(request):
     students = Students.objects.all()
@@ -49,8 +51,16 @@ def login_view(request):
     if request.method == 'POST':
         enrollment_number = request.POST.get('uname')
         password = request.POST.get('psw')
-        student = Students.objects.get(Enrollment_number=enrollment_number)
-        student.calculate_fine()
+        current_time = timezone.now()
+        time_diff_in_hours = 2
+        fine_per_hour = 100
+        students = Students.objects.filter(book_time__lt=current_time-timezone.timedelta(hours=time_diff_in_hours))
+        for student in students:
+            time_diff_in_seconds = (current_time - student.book_time).total_seconds()
+            fine = fine_per_hour * (time_diff_in_seconds // (time_diff_in_hours*3600))
+            student.Fine += Decimal(str(fine))
+            student.save()
+
 
         if enrollment_number == '000000000':
             conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
@@ -90,9 +100,6 @@ def login_view(request):
                 items = goods.objects.filter(Possessed_by__isnull=True)
                 # close the database connection
                 conne.close()
-                # student = Students.objects.get(Enrollment_number=enrollment_number)
-                # student.book_time = timezone.now()
-                # student.calculate_fine()
             
                 return render(request, 'sports_goods/particular.html', {'results': results,'items': items})
             else:
@@ -182,18 +189,37 @@ def booked(request):
         cursor.execute(query_check)
         result = cursor.fetchone()
 
-        if not result[0] and not result[1] and result[2] == 0.00 and not result[3]:
-            query = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item1}'"
-            query1 = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item2}'"
-            query2 = f"UPDATE User SET Item1='{item1}', Item2='{item2}' WHERE Enrollment_number='{enrollment_number}'"
-            query3 = f"UPDATE User SET book_time=NOW() WHERE Enrollment_number='{enrollment_number}'"
-            cursor.execute(query)
-            cursor.execute(query1)
-            cursor.execute(query2)
-            cursor.execute(query3)
+        if result is not None and not result[0] and not result[1] and result[2] == 0.00 and not result[3]:
+            if item1 != '' and item2 == '':
+                query = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item1}'"
+                query2 = f"UPDATE User SET Item1='{item1}' WHERE Enrollment_number='{enrollment_number}'"
+                query3 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
+                cursor.execute(query)
+                cursor.execute(query2)
+                cursor.execute(query3)
+                message = 'Successfully Booked Item 1'
+            elif item2 != '' and item1 == '':
+                query = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item2}'"
+                query2 = f"UPDATE User SET Item2='{item2}' WHERE Enrollment_number='{enrollment_number}'"
+                query3 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
+                cursor.execute(query)
+                cursor.execute(query2)
+                cursor.execute(query3)
+                message = 'Successfully Booked Item 2'
+            elif item1 != '' and item2 != '' and item1 != item2:
+                query = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item1}'"
+                query1 = f"UPDATE Items SET Possessed_by='{enrollment_number}' WHERE id='{item2}'"
+                query2 = f"UPDATE User SET Item1='{item1}', Item2='{item2}' WHERE Enrollment_number='{enrollment_number}'"
+                query3 = f"UPDATE User SET book_time = NOW() WHERE Enrollment_number = '{enrollment_number}'"
+                cursor.execute(query)
+                cursor.execute(query1)
+                cursor.execute(query2)
+                cursor.execute(query3)
+                message = 'Successfully Booked both items'
+            else:
+                message = 'Please select a valid item to book'
             conne.commit()
             conne.close()
-            message = 'Successfully Booked'
         else:
             message = 'Cannot book more than 2 items or you have already booked an item or have a fine pending'
         return render(request, 'sports_goods/booksuccess.html', {'message': message})
@@ -215,10 +241,5 @@ def released(request):
         conne.close()
         message='Successfully Returned'
         return render(request,'sports_goods/admin.html',{'message':message})
-
-
-
-
     
-
-
+        
