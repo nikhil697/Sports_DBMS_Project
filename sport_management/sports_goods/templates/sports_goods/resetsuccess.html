@@ -1,12 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Success</title>
-</head>
-<body>
-    <div style="margin-top: 50px;"><h1>{{message}}</h1></div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Success</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body {
+      background-image: url("https://images.adsttc.com/media/images/5bf3/8f5f/08a5/e509/1100/01ce/large_jpg/-_Featured_Image.jpg?1542688591");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: "Open Sans", sans-serif;
+  }
+  
+  .box-form {
+      position: absolute;
+      top:0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 700px;
+      height: 200px;
+      background: #FFFFFF;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex: 1 1 100%;
+      align-items: stretch;
+      justify-content: space-between;
+      box-shadow: 0 0 20px 6px #3e0101d4;
+    }
+  
+    .box-form div {
+      margin: auto;
+      line-height: 51px;
+      vertical-align: middle;
+    }
+    
+    .box-form div p {
+      margin: auto;
+      line-height: 51px;
+      vertical-align: middle;
+      text-align: center;
+    }</style>
+  </head>
+  <body>
+    <!-- partial:index.partial.html -->
+    <div class="box-form flex flex-col items-center justify-center">
+      <div class="message">
+        <h1
+          class="text-4xl font-bold flex flex-col items-center justify-center"
+        >
+          {{message}}
+        </h1>
+        <p class="flex flex-col items-center justify-center">
+          To return to the login page click below
+        </p>
+        <form action="{% url 'login' %}" method="post" >
+          {% csrf_token %}
+        <div class="return flex flex-col items-center justify-center">
+          <!-- <a href="index.html"
+          --><button type="submit"
+              class="justify-items-center text-white bg-[#cc0000] border-0 py-2 px-20 focus:outline-none hover:bg-black hover:text-white rounded-lg text-lg"
+            >
+              Return
+            </button></div></form>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

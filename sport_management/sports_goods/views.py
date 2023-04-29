@@ -57,9 +57,10 @@ def login_view(request):
         students = Students.objects.filter(book_time__lt=current_time-timezone.timedelta(hours=time_diff_in_hours))
         for student in students:
             time_diff_in_seconds = (current_time - student.book_time).total_seconds()
-            fine = fine_per_hour * (time_diff_in_seconds // (time_diff_in_hours*3600))
+            fine = (time_diff_in_seconds // (time_diff_in_hours*3600)) * fine_per_hour
             student.Fine += Decimal(str(fine))
             student.save()
+
 
 
         if enrollment_number == '000000000':
@@ -119,7 +120,7 @@ def resetpass(request):
     return render(request, 'sports_goods/resetpass.html', {})
 
 def success(request):
-    return render(request, 'sports_goods/resetsuccess.html', {'message': 'Password reset success'})
+    return render(request, 'sports_goods/resetsuccess.html', {'message': 'Password has been successfully reset'})
 
 def resetpassfunc(request):
     if request.method == 'POST':

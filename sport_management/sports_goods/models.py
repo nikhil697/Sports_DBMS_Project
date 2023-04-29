@@ -21,23 +21,10 @@ class Students(models.Model):
     Branch=models.CharField(max_length=30, default=None)
     Phone_number=models.BigIntegerField(unique=True)
     Password=models.CharField(max_length=20, validators=[MinLengthValidator(5)], default=12345)
-    Fine=models.DecimalField(max_digits=5, decimal_places=2, default=0.00, null=True)
+    Fine=models.DecimalField(max_digits=7, decimal_places=2, default=0.00, null=True)
     Item1 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item1_students', db_column='Item1', blank=True, null=True)
     Item2 = models.ForeignKey(goods, on_delete=models.CASCADE, related_name='item2_students', db_column='Item2', blank=True, null=True)
     book_time = models.DateTimeField(null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.book_time:
-            current_time = timezone.now()
-            time_diff = current_time - self.book_time
-            if time_diff.days < 0:
-                self.Fine = 0.00
-            elif time_diff.days == 0 and time_diff.seconds // 3600 <= 2:
-                self.Fine = 0.00
-            else:
-                hours_diff = (time_diff.days * 24) + (time_diff.seconds // 3600)
-                self.Fine = (hours_diff // 2) * 100
-        super().save(*args, **kwargs)
     class Meta:
         db_table = 'User'
 

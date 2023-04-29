@@ -24,4 +24,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("new",views.about, name="about"),
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
