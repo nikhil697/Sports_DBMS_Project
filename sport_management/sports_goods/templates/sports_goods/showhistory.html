@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Data</title>
-
+    <title>History</title>
     <link
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       rel="stylesheet"
@@ -133,29 +132,23 @@
     <table class="styled-table">
         <thead>
           <tr>
-            <th>Enrollment_number</th>
-            <th>Name</th>
-            <th>Branch</th>
-            <th>Phone_number</th>
-            <th>Fine</th>
-            <th>Item1</th>
-            <th>Item2</th>
+            <th>Item Id</th>
+            <th>Enrollment Number</th>
+            <th>Time of booking</th>
+            <th>Time of Release</th>
           </tr>
         </thead>
         <tbody>
-          {% for student in students %}
+          {% for x in transactions %}
           <tr>
-            <td>{{ student.Enrollment_number }}</td>
-            <td>{{ student.Name }}</td>
-            <td>{{ student.Branch }}</td>
-            <td>{{ student.Phone_number }}</td>
-            <td>{{ student.Fine }}</td>
-            <td>{{ student.Item1 }}</td>
-            <td>{{ student.Item2 }}</td>
+            <td>{{ x.id }}</td>
+            <td>{{ x.Enrollment_number }}</td>
+            <td>{{ x.time_of_booking }}</td>
+            <td>{{ x.time_of_release }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
-    </div>
-</body>
+      </div>
+      </body>
 </html>

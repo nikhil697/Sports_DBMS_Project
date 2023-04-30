@@ -16,6 +16,7 @@ urlpatterns = [
     # path('book/', views.book_equipment, name='book_equipment'),
     path('booksuccess/',views.booked,name='booked'),
     path('releasedsuccess/',views.released,name='released'),
+    path('history/',views.history,name='history'),
 
 
 ]

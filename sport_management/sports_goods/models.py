@@ -28,6 +28,17 @@ class Students(models.Model):
     class Meta:
         db_table = 'User'
 
+class Transaction(models.Model):
+    transaction_id = models.AutoField(primary_key=True)
+    Enrollment_number = models.BigIntegerField(null=False)
+    id = models.ForeignKey('goods', on_delete=models.CASCADE,related_name='possess',db_column='id',blank=False)
+    time_of_booking = models.DateTimeField(auto_now_add=True)
+    time_of_release = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'Transaction1'
+
+
 
 
 

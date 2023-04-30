@@ -23,8 +23,113 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
-
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+    <link rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            background-image: url("https://images.adsttc.com/media/images/5bf3/8f5f/08a5/e509/1100/01ce/large_jpg/-_Featured_Image.jpg?1542688591");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        #butt {
+            float: right;
+        }
+
+        .block {
+            border-radius: 10px;
+            height: 25px;
+        }
+
+        .box-form {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 700px;
+            height: 200px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex: 1 1 100%;
+            align-items: stretch;
+            justify-content: space-between;
+            box-shadow: 0 0 20px 6px #3e0101d4;
+        }
+
+        .box-form div {
+            margin: auto;
+            line-height: 51px;
+            vertical-align: middle;
+        }
+
+        .box-form div p {
+            margin: auto;
+            line-height: 51px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .styled-table thead tr {
+            background-color: #cc0000 !important;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .ab {
+            margin-top: 50px;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }
+
+        .button,
+        select {
+            text-transform: none;
+            border-radius: 10px;
+            border: 0.5px solid #cc0000 ;
+        }
         .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
