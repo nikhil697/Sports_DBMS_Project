@@ -48,20 +48,35 @@ def loginpage(request):
     return render(request, 'sports_goods/login_page.html')
 
 def login_view(request):
+    # if request.method == 'POST':
+    #     enrollment_number = request.POST.get('uname')
+    #     password = request.POST.get('psw')
+    #     current_time = timezone.now()
+    #     time_diff_in_hours = 2
+    #     fine_per_hour = 100
+    #     students = Students.objects.filter(book_time__lt=current_time-timezone.timedelta(hours=time_diff_in_hours))
+    #     for student in students:
+    #         time_diff_in_seconds = (current_time - student.book_time).total_seconds()
+    #         fine = (time_diff_in_seconds // (time_diff_in_hours*3600)) * fine_per_hour
+    #         student.Fine += Decimal(str(fine))
+    #         student.save()
+
     if request.method == 'POST':
         enrollment_number = request.POST.get('uname')
         password = request.POST.get('psw')
         current_time = timezone.now()
         time_diff_in_hours = 2
         fine_per_hour = 100
-        students = Students.objects.filter(book_time__lt=current_time-timezone.timedelta(hours=time_diff_in_hours))
+        students = Students.objects.filter(book_time__lt=current_time-timezone.timedelta(hours=time_diff_in_hours), Fine__lt=fine_per_hour*time_diff_in_hours)
         for student in students:
             time_diff_in_seconds = (current_time - student.book_time).total_seconds()
             fine = (time_diff_in_seconds // (time_diff_in_hours*3600)) * fine_per_hour
-            student.Fine += Decimal(str(fine))
+            total_fine = student.Fine + Decimal(str(fine))
+            if total_fine > fine_per_hour*time_diff_in_hours:
+                student.Fine = fine_per_hour*time_diff_in_hours
+            else:
+                student.Fine = total_fine
             student.save()
-
-
 
         if enrollment_number == '000000000':
             conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
