@@ -60,6 +60,7 @@ def login_view(request):
             time_diff_in_seconds = (current_time - student.book_time).total_seconds()
             fine = (time_diff_in_seconds // (time_diff_in_hours*3600)) * fine_per_hour
             student.Fine += Decimal(str(fine))
+            student.full_clean()
             student.save()
 
     # if request.method == 'POST':
@@ -77,7 +78,9 @@ def login_view(request):
     #             student.Fine = fine_per_hour*time_diff_in_hours
     #         else:
     #             student.Fine = total_fine
+    #         student.full_clean()
     #         student.save()
+
 
         if enrollment_number == '000000000':
             conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='newsport')
